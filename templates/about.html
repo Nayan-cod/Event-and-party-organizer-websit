@@ -132,6 +132,78 @@
         </div>
     </section>
 
+    <!-- Our Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <h2>Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/hiren.jpg') }}" alt="Hiren Prajapati">
+                    </div>
+                    <div class="member-info">
+                        <h3>Hiren Prajapati</h3>
+                        <p class="member-role">Project Lead</p>
+                        <p class="member-bio">Experienced in web development and project management, leading our team to success.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/nayan.jpg') }}" alt="Nayan Rathava">
+                    </div>
+                    <div class="member-info">
+                        <h3>Nayan Rathava</h3>
+                        <p class="member-role">Backend Developer</p>
+                        <p class="member-bio">Specializes in database management and server-side development.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/prince.jpg') }}" alt="Prince Sonara">
+                    </div>
+                    <div class="member-info">
+                        <h3>Prince Sonara</h3>
+                        <p class="member-role">Frontend Developer</p>
+                        <p class="member-bio">Expert in creating beautiful and responsive user interfaces.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="{{ url_for('static', filename='images/team/parth.jpg') }}" alt="Parth Prajapati">
+                    </div>
+                    <div class="member-info">
+                        <h3>Parth Prajapati</h3>
+                        <p class="member-role">UI/UX Designer</p>
+                        <p class="member-bio">Creates intuitive and engaging user experiences for our platform.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- FAQ Section -->
     <section class="faq-section">
         <div class="container">
@@ -369,6 +441,93 @@
     
     .about-stats {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Team Section Styles */
+.team-section {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.team-member {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+}
+
+.member-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.member-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.team-member:hover .member-image img {
+    transform: scale(1.1);
+}
+
+.member-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.member-info h3 {
+    color: #9c27b0;
+    margin-bottom: 5px;
+    font-size: 1.5em;
+}
+
+.member-role {
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.member-bio {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-links a {
+    color: #9c27b0;
+    font-size: 1.2em;
+    transition: color 0.3s;
+}
+
+.social-links a:hover {
+    color: #7b1fa2;
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 }
 </style>
