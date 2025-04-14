@@ -123,8 +123,13 @@ def add_service():
         title = request.form['title']
         category = request.form['category']
         description = request.form['description']
-        price = request.form['price']
+        price = int(request.form['price'])
         image = request.files['image']
+
+        # Validate price
+        if price < 0 or price % 500 != 0:
+            flash('Price must be a positive multiple of 500', 'error')
+            return redirect(url_for('add_service'))
 
         image_filename = None
         if image and allowed_file(image.filename):
