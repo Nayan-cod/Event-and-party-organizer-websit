@@ -68,7 +68,7 @@
     <!-- Contact Information -->
     <section class="contact-section">
         <div class="container">
-            <h2>Contact Us</h2>
+            <h2 style="color: #070008;">Contact Us</h2>
             <div class="contact-grid">
                 <div class="contact-info">
                     <div class="contact-item">
@@ -85,8 +85,9 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <h3>Send us a Message</h3>
+                    <h3 style="color: #070008;">Send us a Message</h3>
                     <form method="POST" action="{{ url_for('contact') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="form-group">
                             <input type="text" name="name" placeholder="Your Name" required>
                         </div>
@@ -108,14 +109,14 @@
         <div class="container">
             <h2>Customer Feedback & Complaints</h2>
             <div class="complaints-form">
-                <form method="POST" action="{{ url_for('submit_complaint') }}">
+                <form method="POST" action="{{ url_for('submit_complaint') }}" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group">
                         <select name="complaint_type" required>
-                            <option value="" disabled selected>Select Complaint Type</option>
+                            <option value="">Select Complaint Type</option>
                             <option value="service_quality">Service Quality</option>
                             <option value="payment_issue">Payment Issue</option>
                             <option value="organizer_behavior">Organizer Behavior</option>
-                            <option value="technical_issue">Technical Issue</option>
                             <option value="other">Other</option>
                         </select>
                     </div>
@@ -123,8 +124,9 @@
                         <textarea name="complaint_details" placeholder="Please describe your complaint in detail" required></textarea>
                     </div>
                     <div class="form-group">
-                        <input type="file" name="complaint_attachment" accept="image/*,.pdf,.doc,.docx">
-                        <small>You can attach supporting documents (optional)</small>
+                        <label for="complaint_attachment">Attachment (Optional)</label>
+                        <input type="file" id="complaint_attachment" name="complaint_attachment" accept="image/*,.pdf,.doc,.docx">
+                        <small>You can attach images or documents to support your complaint</small>
                     </div>
                     <button type="submit" class="submit-btn">Submit Complaint</button>
                 </form>

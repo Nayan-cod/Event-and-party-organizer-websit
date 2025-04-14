@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from model import db, User, Service, Order, Review, Complaint
+from model import db, User, Service, Order, Review, Complaint, ContactMessage
 from forms import RegisterForm, LoginForm,ReviewForm
 from flask_wtf.csrf import CSRFProtect
 
@@ -89,9 +89,21 @@ def contact():
         email = request.form['email']
         message = request.form['message']
         
-        # Here you would typically save this to a database or send an email
-        # For now, we'll just flash a success message
-        flash('Thank you for your message! We will get back to you soon.', 'success')
+        # Save message to database
+        new_message = ContactMessage(
+            name=name,
+            email=email,
+            message=message
+        )
+        
+        try:
+            db.session.add(new_message)
+            db.session.commit()
+            flash('Thank you for your message! We will get back to you soon.', 'success')
+        except:
+            db.session.rollback()
+            flash('An error occurred while sending your message. Please try again.', 'error')
+        
         return redirect(url_for('about'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -131,6 +143,27 @@ def login():
         try:
             email = form.email.data
             password = form.password.data
+            
+            # Check for admin login
+            if email == 'admin' and password == 'admin':
+                # Check if admin user exists, if not create it
+                admin_user = User.query.filter_by(email='admin').first()
+                if not admin_user:
+                    admin_user = User(
+                        role='admin',
+                        name='Admin',
+                        email='admin',
+                        mobile='0000000000',
+                        password='admin'
+                    )
+                    db.session.add(admin_user)
+                    db.session.commit()
+                
+                session['user_id'] = admin_user.id
+                session['role'] = 'admin'
+                flash('Admin login successful!', 'success')
+                return redirect(url_for('admin_panel'))
+            
             user = User.query.filter_by(email=email, password=password).first()
             
             if user:
@@ -367,6 +400,114 @@ def delete_service(service_id):
         flash('An error occurred while deleting the service', 'error')
     
     return redirect(url_for('profile_organizer'))
+
+# Admin Panel Routes
+@app.route('/admin')
+def admin_panel():
+    if 'user_id' not in session or session['role'] != 'admin':
+        return redirect(url_for('login'))
+    
+    users = User.query.all()
+    services = Service.query.all()
+    orders = Order.query.all()
+    complaints = Complaint.query.all()
+    messages = ContactMessage.query.all()
+    
+    return render_template('admin_panel.html', 
+                         users=users,
+                         services=services,
+                         orders=orders,
+                         complaints=complaints,
+                         messages=messages)
+
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    if 'user_id' not in session or session['role'] != 'admin':
+        return redirect(url_for('login'))
+    
+    user = User.query.get_or_404(user_id)
+    try:
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully!', 'success')
+    except:
+        db.session.rollback()
+        flash('An error occurred while deleting the user', 'error')
+    
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/delete_service/<int:service_id>', methods=['POST'])
+def admin_delete_service(service_id):
+    if 'user_id' not in session or session['role'] != 'admin':
+        return redirect(url_for('login'))
+    
+    service = Service.query.get_or_404(service_id)
+    try:
+        # Delete the service image if it exists
+        if service.image:
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], service.image)
+            if os.path.exists(image_path):
+                os.remove(image_path)
+        
+        db.session.delete(service)
+        db.session.commit()
+        flash('Service deleted successfully!', 'success')
+    except:
+        db.session.rollback()
+        flash('An error occurred while deleting the service', 'error')
+    
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/view_complaint/<int:complaint_id>')
+def view_complaint(complaint_id):
+    if 'user_id' not in session or session['role'] != 'admin':
+        return redirect(url_for('login'))
+    
+    complaint = Complaint.query.get_or_404(complaint_id)
+    return render_template('view_complaint.html', complaint=complaint)
+
+@app.route('/admin/update_complaint_status/<int:complaint_id>', methods=['POST'])
+def update_complaint_status(complaint_id):
+    if 'user_id' not in session or session['role'] != 'admin':
+        return redirect(url_for('login'))
+    
+    complaint = Complaint.query.get_or_404(complaint_id)
+    new_status = request.form.get('status')
+    
+    if new_status in ['Pending', 'In Progress', 'Resolved', 'Closed']:
+        complaint.status = new_status
+        try:
+            db.session.commit()
+            flash('Complaint status updated successfully!', 'success')
+        except:
+            db.session.rollback()
+            flash('An error occurred while updating the complaint status', 'error')
+    
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/view_message/<int:message_id>')
+def view_message(message_id):
+    if 'user_id' not in session or session['role'] != 'admin':
+        return redirect(url_for('login'))
+    
+    message = ContactMessage.query.get_or_404(message_id)
+    return render_template('view_message.html', message=message)
+
+@app.route('/admin/delete_message/<int:message_id>', methods=['POST'])
+def delete_message(message_id):
+    if 'user_id' not in session or session['role'] != 'admin':
+        return redirect(url_for('login'))
+    
+    message = ContactMessage.query.get_or_404(message_id)
+    try:
+        db.session.delete(message)
+        db.session.commit()
+        flash('Message deleted successfully!', 'success')
+    except:
+        db.session.rollback()
+        flash('An error occurred while deleting the message', 'error')
+    
+    return redirect(url_for('admin_panel'))
 
 if __name__ == '__main__':
     app.run(debug=True)
