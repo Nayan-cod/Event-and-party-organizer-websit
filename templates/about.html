@@ -1,6 +1,375 @@
-
 {% extends "layout.html" %}
 {% block content %}
-<h2>About Us</h2>
-<p>We connect customers with professional event and party organizers. Whether it's a wedding, birthday, or office party — we help make your event a success!</p>
+<div class="about-container">
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="hero-content">
+            <h1>About Our Event Planning Platform</h1>
+            <p>Your one-stop solution for all event planning needs</p>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="about-section">
+        <div class="container">
+            <h2>Our Story</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Welcome to our event planning platform, where we connect customers with professional event organizers. Our mission is to make event planning simple, efficient, and enjoyable for everyone involved.</p>
+                    <p>Founded in 2024, we've been helping people create memorable events by providing access to top-rated event services and professional organizers.</p>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Events Planned</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Happy Customers</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Professional Organizers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2>Why Choose Us?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Verified Organizers</h3>
+                    <p>All our event organizers are thoroughly vetted and verified</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-star"></i>
+                    <h3>Customer Reviews</h3>
+                    <p>Real feedback from previous customers helps you make informed decisions</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure Payments</h3>
+                    <p>Safe and secure payment processing for all transactions</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-headset"></i>
+                    <h3>24/7 Support</h3>
+                    <p>Round-the-clock customer support for all your queries</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Information -->
+    <section class="contact-section">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>123 Event Street, City, Country</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <p>+1 234 567 8900</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>support@eventplanner.com</p>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Send us a Message</h3>
+                    <form method="POST" action="{{ url_for('contact') }}">
+                        <div class="form-group">
+                            <input type="text" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Complaints Section -->
+    <section class="complaints-section">
+        <div class="container">
+            <h2>Customer Feedback & Complaints</h2>
+            <div class="complaints-form">
+                <form method="POST" action="{{ url_for('submit_complaint') }}">
+                    <div class="form-group">
+                        <select name="complaint_type" required>
+                            <option value="" disabled selected>Select Complaint Type</option>
+                            <option value="service_quality">Service Quality</option>
+                            <option value="payment_issue">Payment Issue</option>
+                            <option value="organizer_behavior">Organizer Behavior</option>
+                            <option value="technical_issue">Technical Issue</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="complaint_details" placeholder="Please describe your complaint in detail" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="file" name="complaint_attachment" accept="image/*,.pdf,.doc,.docx">
+                        <small>You can attach supporting documents (optional)</small>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit Complaint</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>How do I book a service?</h3>
+                    <p>Simply browse our services, select the one you want, and click the "Book Now" button. You'll need to create an account if you haven't already.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>How are payments processed?</h3>
+                    <p>We use secure payment gateways to process all transactions. Your payment information is always protected.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I cancel my booking?</h3>
+                    <p>Yes, you can cancel your booking, but cancellation policies may vary depending on the service and timing.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>How do I become an organizer?</h3>
+                    <p>Register as an organizer, complete your profile, and submit your services for review. Once approved, you can start accepting bookings.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.about-hero {
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/static/images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    padding: 150px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+}
+
+.hero-content h1 {
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-content p {
+    font-size: 1.5em;
+    margin-bottom: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.about-section {
+    padding: 40px 0;
+    background-color: #f9f9f9;
+}
+
+.about-content {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.about-text {
+    flex: 2;
+}
+
+.about-stats {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.stat-number {
+    display: block;
+    font-size: 2em;
+    color: #9c27b0;
+    font-weight: bold;
+}
+
+.features-section {
+    padding: 40px 0;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.feature-card {
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.feature-card i {
+    font-size: 2.5em;
+    color: #9c27b0;
+    margin-bottom: 20px;
+}
+
+.contact-section {
+    padding: 40px 0;
+    background-color: #f9f9f9;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.contact-info {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.contact-item i {
+    font-size: 1.5em;
+    color: #9c27b0;
+    margin-right: 15px;
+}
+
+.complaints-section {
+    padding: 40px 0;
+}
+
+.complaints-form {
+    max-width: 600px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.faq-section {
+    padding: 40px 0;
+    background-color: #f9f9f9;
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.faq-item {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.faq-item h3 {
+    color: #9c27b0;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.submit-btn {
+    background: #9c27b0;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background: #7b1fa2;
+}
+
+@media (max-width: 768px) {
+    .about-content {
+        flex-direction: column;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .about-stats {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %}

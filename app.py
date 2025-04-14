@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-from model import db, User, Service, Order, Review
+from flask_migrate import Migrate
+from model import db, User, Service, Order, Review, Complaint
 from forms import RegisterForm, LoginForm,ReviewForm
 
 import os
@@ -11,10 +12,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SECRET_KEY'] = 'your-secret-key'
 
-
-
 db.init_app(app)
-
+migrate = Migrate(app, db)
 
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -73,9 +72,17 @@ def services():
     
     return render_template('services.html', services=services)
 
-@app.route('/contact')
+@app.route('/contact', methods=['POST'])
 def contact():
-    return render_template('contact.html')
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
+        
+        # Here you would typically save this to a database or send an email
+        # For now, we'll just flash a success message
+        flash('Thank you for your message! We will get back to you soon.', 'success')
+        return redirect(url_for('about'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -234,6 +241,38 @@ def update_order_status(order_id):
 def logout():
     session.clear()
     return redirect(url_for('home'))
+
+@app.route('/submit_complaint', methods=['POST'])
+def submit_complaint():
+    if request.method == 'POST':
+        if 'user_id' not in session:
+            flash('Please login to submit a complaint', 'error')
+            return redirect(url_for('login'))
+            
+        complaint_type = request.form['complaint_type']
+        complaint_details = request.form['complaint_details']
+        attachment = request.files.get('complaint_attachment')
+        
+        # Handle file upload if present
+        attachment_filename = None
+        if attachment and allowed_file(attachment.filename):
+            filename = secure_filename(attachment.filename)
+            attachment_filename = filename
+            attachment.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
+        # Create new complaint
+        new_complaint = Complaint(
+            user_id=session['user_id'],
+            complaint_type=complaint_type,
+            details=complaint_details,
+            attachment=attachment_filename
+        )
+        
+        db.session.add(new_complaint)
+        db.session.commit()
+        
+        flash('Thank you for your feedback. We will review your complaint and get back to you.', 'success')
+        return redirect(url_for('about'))
 
 if __name__ == '__main__':
     app.run(debug=True)
