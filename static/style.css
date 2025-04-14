@@ -1122,7 +1122,7 @@ body {
     font-size: 16px;
 }
 
-/* Edit Service Form Styles */
+/* Add Service Form Styles */
 .service-form-wrapper {
     max-width: 600px;
     margin: 40px auto;
@@ -1132,15 +1132,8 @@ body {
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-.form-title {
-    text-align: center;
-    color: #333;
-    margin-bottom: 30px;
-    font-size: 24px;
-}
-
 .service-form .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .service-form label {
@@ -1148,21 +1141,24 @@ body {
     margin-bottom: 8px;
     color: #555;
     font-weight: 500;
+    font-size: 0.95rem;
 }
 
 .service-form .form-control {
     width: 100%;
-    padding: 12px;
+    padding: 12px 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
-    transition: border-color 0.3s;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
 }
 
 .service-form .form-control:focus {
     border-color: #4caf50;
     outline: none;
     box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    background-color: #fff;
 }
 
 .service-form textarea.form-control {
@@ -1170,13 +1166,48 @@ body {
     resize: vertical;
 }
 
-.form-actions {
+.service-form .form-text {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.service-form .form-actions {
     display: flex;
     gap: 15px;
     margin-top: 30px;
 }
 
-.cancel-btn {
+.service-form .submit-btn {
+    flex: 1;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.service-form .submit-btn:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.service-form .submit-btn i {
+    font-size: 16px;
+}
+
+.service-form .cancel-btn {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1187,18 +1218,60 @@ body {
     border: none;
     border-radius: 5px;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
-.cancel-btn:hover {
+.service-form .cancel-btn:hover {
     background-color: #d32f2f;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.cancel-btn i {
+.service-form .cancel-btn i {
     font-size: 16px;
+}
+
+/* File input styling */
+.service-form input[type="file"] {
+    padding: 8px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.service-form input[type="file"]:focus {
+    border-color: #4caf50;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Select dropdown styling */
+.service-form select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 15px;
+    padding-right: 40px;
+}
+
+/* Error message styling */
+.service-form .error-message {
+    color: #f44336;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Success message styling */
+.service-form .success-message {
+    color: #4caf50;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: block;
 }
 
