@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "layout.html" %}
 
 {% block title %}Admin Panel{% endblock %}
 
@@ -190,4 +190,6 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+
+<link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+{% endblock %}

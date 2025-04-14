@@ -146,20 +146,6 @@ def login():
             
             # Check for admin login
             if email == 'admin' and password == 'admin':
-                # Check if admin user exists, if not create it
-                admin_user = User.query.filter_by(email='admin').first()
-                if not admin_user:
-                    admin_user = User(
-                        role='admin',
-                        name='Admin',
-                        email='admin',
-                        mobile='0000000000',
-                        password='admin'
-                    )
-                    db.session.add(admin_user)
-                    db.session.commit()
-                
-                session['user_id'] = admin_user.id
                 session['role'] = 'admin'
                 flash('Admin login successful!', 'success')
                 return redirect(url_for('admin_panel'))
@@ -404,9 +390,6 @@ def delete_service(service_id):
 # Admin Panel Routes
 @app.route('/admin')
 def admin_panel():
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
-    
     users = User.query.all()
     services = Service.query.all()
     orders = Order.query.all()
@@ -422,9 +405,6 @@ def admin_panel():
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
-    
     user = User.query.get_or_404(user_id)
     try:
         db.session.delete(user)
@@ -438,9 +418,6 @@ def delete_user(user_id):
 
 @app.route('/admin/delete_service/<int:service_id>', methods=['POST'])
 def admin_delete_service(service_id):
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
-    
     service = Service.query.get_or_404(service_id)
     try:
         # Delete the service image if it exists
@@ -460,17 +437,11 @@ def admin_delete_service(service_id):
 
 @app.route('/admin/view_complaint/<int:complaint_id>')
 def view_complaint(complaint_id):
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
-    
     complaint = Complaint.query.get_or_404(complaint_id)
     return render_template('view_complaint.html', complaint=complaint)
 
 @app.route('/admin/update_complaint_status/<int:complaint_id>', methods=['POST'])
 def update_complaint_status(complaint_id):
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
-    
     complaint = Complaint.query.get_or_404(complaint_id)
     new_status = request.form.get('status')
     
@@ -487,17 +458,11 @@ def update_complaint_status(complaint_id):
 
 @app.route('/admin/view_message/<int:message_id>')
 def view_message(message_id):
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
-    
     message = ContactMessage.query.get_or_404(message_id)
     return render_template('view_message.html', message=message)
 
 @app.route('/admin/delete_message/<int:message_id>', methods=['POST'])
 def delete_message(message_id):
-    if 'user_id' not in session or session['role'] != 'admin':
-        return redirect(url_for('login'))
-    
     message = ContactMessage.query.get_or_404(message_id)
     try:
         db.session.delete(message)
