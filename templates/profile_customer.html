@@ -28,12 +28,22 @@
     <div class="orders-list">
         {% for order in orders %}
         <div class="order-card">
-            <h4 class="order-title">{{ order.service.title }}</h4>
-            <p><strong>Category:</strong> {{ order.service.category }}</p>
-            <p><strong>Price:</strong> ₹{{ order.service.price }}</p>
-            <p class="order-status {{ order.status.lower() }}"><strong>Status:</strong> {{ order.status }}</p>
-            <p><strong>Organizer:</strong> {{ order.service.organizer.name }}</p>
-            <p><strong>Contact:</strong> {{ order.service.organizer.email }} | {{ order.service.organizer.mobile }}</p>
+            {% if order.service %}
+                <h4 class="order-title">{{ order.service.title }}</h4>
+                <p><strong>Category:</strong> {{ order.service.category }}</p>
+                <p><strong>Price:</strong> ₹{{ order.service.price }}</p>
+                <p class="order-status {{ order.status.lower() }}"><strong>Status:</strong> {{ order.status }}</p>
+                {% if order.service.organizer %}
+                    <p><strong>Organizer:</strong> {{ order.service.organizer.name }}</p>
+                    <p><strong>Contact:</strong> {{ order.service.organizer.email }} | {{ order.service.organizer.mobile }}</p>
+                {% else %}
+                    <p class="text-muted">Organizer information not available</p>
+                {% endif %}
+            {% else %}
+                <h4 class="order-title">Service Not Available</h4>
+                <p class="order-status {{ order.status.lower() }}"><strong>Status:</strong> {{ order.status }}</p>
+                <p class="text-muted">This service has been removed or is no longer available</p>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
