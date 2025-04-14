@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from model import db, User, Service, Order, Review, Complaint
 from forms import RegisterForm, LoginForm,ReviewForm
+from flask_wtf.csrf import CSRFProtect
 
 import os
 from werkzeug.utils import secure_filename
@@ -11,14 +12,23 @@ from sqlalchemy import func
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['WTF_CSRF_ENABLED'] = True
 
+csrf = CSRFProtect(app)
 db.init_app(app)
 migrate = Migrate(app, db)
+
+# Create database tables
+with app.app_context():
+    db.create_all()
 
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Create uploads directory if it doesn't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -88,16 +98,29 @@ def contact():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        user = User(
-            role=form.role.data,
-            name=form.name.data,
-            email=form.email.data,
-            mobile=form.mobile.data,
-            password=form.password.data
-        )
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('login'))
+        try:
+            # Check if email already exists
+            existing_user = User.query.filter_by(email=form.email.data).first()
+            if existing_user:
+                flash('Email already registered. Please use a different email or login.', 'error')
+                return render_template('register.html', form=form)
+            
+            user = User(
+                role=form.role.data,
+                name=form.name.data,
+                email=form.email.data,
+                mobile=form.mobile.data,
+                password=form.password.data
+            )
+            db.session.add(user)
+            db.session.commit()
+            flash('Registration successful! Please login to continue.', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred during registration. Please try again.', 'error')
+            return render_template('register.html', form=form)
+    
     return render_template('register.html', form=form)
 
 
@@ -105,17 +128,25 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
-        user = User.query.filter_by(email=email, password=password).first()
-        if user:
-            session['user_id'] = user.id
-            session['role'] = user.role
-            if user.role == 'organizer':
-                return redirect(url_for('profile_organizer'))
+        try:
+            email = form.email.data
+            password = form.password.data
+            user = User.query.filter_by(email=email, password=password).first()
+            
+            if user:
+                session['user_id'] = user.id
+                session['role'] = user.role
+                flash('Login successful!', 'success')
+                if user.role == 'organizer':
+                    return redirect(url_for('profile_organizer'))
+                else:
+                    return redirect(url_for('profile_customer'))
             else:
-                return redirect(url_for('profile_customer'))
-    return render_template('login.html', form=form)  # Pass 'form' to template
+                flash('Invalid email or password. Please try again.', 'error')
+        except Exception as e:
+            flash('An error occurred during login. Please try again.', 'error')
+    
+    return render_template('login.html', form=form)
 
 
 @app.route('/add_service', methods=['GET', 'POST'])

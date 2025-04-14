@@ -80,7 +80,8 @@
             </a>
             {% if 'user_id' in session and session['role'] == 'customer' %}
             <form action="{{ url_for('place_order', service_id=service.id) }}" method="POST" class="inline-form">
-              <button type="submit" class="order-button"><i class="fas fa-shopping-cart"></i> Book Now</button>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="order-button"><i class="fas fa-shopping-cart"></i> Book Now</button>
             </form>
             {% endif %}
           </div>

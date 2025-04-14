@@ -2,19 +2,29 @@
 {% block content %}
 <div class="auth-wrapper">
     <h2>Register</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <label>{{ form.role.label }}</label>
-        {{ form.role }}
-        <label>{{ form.name.label }}</label>
-        {{ form.name }}
-        <label>{{ form.email.label }}</label>
-        {{ form.email }}
-        <label>{{ form.mobile.label }}</label>
-        {{ form.mobile }}
-        <label>{{ form.password.label }}</label>
-        {{ form.password }}
-        {{ form.submit }}
+    <form method="POST" action="{{ url_for('register') }}">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label>{{ form.role.label }}</label>
+            {{ form.role(class="form-control") }}
+        </div>
+        <div class="form-group">
+            <label>{{ form.name.label }}</label>
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="form-group">
+            <label>{{ form.email.label }}</label>
+            {{ form.email(class="form-control") }}
+        </div>
+        <div class="form-group">
+            <label>{{ form.mobile.label }}</label>
+            {{ form.mobile(class="form-control") }}
+        </div>
+        <div class="form-group">
+            <label>{{ form.password.label }}</label>
+            {{ form.password(class="form-control") }}
+        </div>
+        {{ form.submit(class="submit-btn") }}
     </form>
 </div>
 {% endblock %}
