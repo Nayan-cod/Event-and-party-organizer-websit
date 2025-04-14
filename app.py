@@ -26,26 +26,23 @@ def allowed_file(filename):
 
 @app.route('/')
 def home():
-    # Get the most ordered services by counting orders for each service
-    # Use a subquery to count orders for each service
-    
-    # Get count of orders for each service
-    service_order_counts = db.session.query(
-        Order.service_id, 
-        func.count(Order.id).label('order_count')
-    ).group_by(Order.service_id).subquery()
-    
-    # Join with services and order by count
+    # Get services with their review counts and average ratings
+    service_reviews = db.session.query(
+        Service.id,
+        func.count(Review.id).label('review_count'),
+        func.avg(Review.rating).label('avg_rating')
+    ).outerjoin(Review, Service.id == Review.service_id)\
+     .group_by(Service.id).subquery()
+
+    # Calculate a score for each service
+    # Score = (average rating * number of reviews) / (price / 1000)
+    # This gives higher scores to services with good ratings, many reviews, and reasonable prices
     top_services = db.session.query(Service).\
-        outerjoin(service_order_counts, Service.id == service_order_counts.c.service_id).\
-        order_by(service_order_counts.c.order_count.desc().nullslast()).\
-        limit(4).all()
-    
-    # If there are fewer than 4 ordered services, add others to make up the count
-    if len(top_services) < 4:
-        existing_ids = [s.id for s in top_services]
-        additional_services = Service.query.filter(~Service.id.in_(existing_ids)).limit(4 - len(top_services)).all()
-        top_services.extend(additional_services)
+        outerjoin(service_reviews, Service.id == service_reviews.c.id).\
+        order_by(
+            (service_reviews.c.avg_rating * service_reviews.c.review_count * 1000.0 / Service.price).desc()
+        ).\
+        limit(3).all()
     
     return render_template('home.html', services=top_services)
 
