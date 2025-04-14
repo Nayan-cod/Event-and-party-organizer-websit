@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="auth-wrapper service-form-wrapper">
+    <h2 class="form-title">Edit Service</h2>
+    
+    <form method="POST" enctype="multipart/form-data" class="service-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+        <div class="form-group">
+            <label for="title">Service Title</label>
+            <input type="text" id="title" name="title" required 
+                   value="{{ service.title }}" class="form-control" placeholder="Enter service title">
+        </div>
+        
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category" required class="form-control">
+                <option value="Food & Catering" {% if service.category == 'Food & Catering' %}selected{% endif %}>Food & Catering</option>
+                <option value="Decoration" {% if service.category == 'Decoration' %}selected{% endif %}>Decoration</option>
+                <option value="Entertainment" {% if service.category == 'Entertainment' %}selected{% endif %}>Entertainment</option>
+                <option value="Photography" {% if service.category == 'Photography' %}selected{% endif %}>Photography</option>
+                <option value="Venue" {% if service.category == 'Venue' %}selected{% endif %}>Venue</option>
+                <option value="Transportation" {% if service.category == 'Transportation' %}selected{% endif %}>Transportation</option>
+                <option value="Full Event Planning" {% if service.category == 'Full Event Planning' %}selected{% endif %}>Full Event Planning</option>
+                <option value="Other" {% if service.category == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" required 
+                      class="form-control" rows="4" placeholder="Describe your service">{{ service.description }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="price">Price (₹)</label>
+            <input type="number" id="price" name="price" required 
+                   value="{{ service.price }}" min="0" step="500" 
+                   class="form-control" placeholder="Enter price in INR (multiples of 500)">
+        </div>
+        
+        <div class="form-group">
+            <label for="image">Update Service Image</label>
+            <input type="file" id="image" name="image" accept="image/*" class="form-control">
+            <small class="form-text">Upload a new image to replace the current one (optional)</small>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <a href="{{ url_for('profile_organizer') }}" class="cancel-btn">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %} 

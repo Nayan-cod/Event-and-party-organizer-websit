@@ -305,5 +305,68 @@ def submit_complaint():
         flash('Thank you for your feedback. We will review your complaint and get back to you.', 'success')
         return redirect(url_for('about'))
 
+@app.route('/edit_service/<int:service_id>', methods=['GET', 'POST'])
+def edit_service(service_id):
+    if 'user_id' not in session or session['role'] != 'organizer':
+        return redirect(url_for('login'))
+    
+    service = Service.query.get_or_404(service_id)
+    
+    # Check if the service belongs to the logged-in organizer
+    if service.organizer_id != session['user_id']:
+        flash('You do not have permission to edit this service', 'error')
+        return redirect(url_for('profile_organizer'))
+    
+    if request.method == 'POST':
+        service.title = request.form['title']
+        service.category = request.form['category']
+        service.description = request.form['description']
+        service.price = int(request.form['price'])
+        
+        image = request.files.get('image')
+        if image and allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            service.image = filename
+        
+        try:
+            db.session.commit()
+            flash('Service updated successfully!', 'success')
+            return redirect(url_for('profile_organizer'))
+        except:
+            db.session.rollback()
+            flash('An error occurred while updating the service', 'error')
+    
+    return render_template('edit_service.html', service=service)
+
+@app.route('/delete_service/<int:service_id>', methods=['POST'])
+def delete_service(service_id):
+    if 'user_id' not in session or session['role'] != 'organizer':
+        return redirect(url_for('login'))
+    
+    service = Service.query.get_or_404(service_id)
+    
+    # Check if the service belongs to the logged-in organizer
+    if service.organizer_id != session['user_id']:
+        flash('You do not have permission to delete this service', 'error')
+        return redirect(url_for('profile_organizer'))
+    
+    try:
+        # Delete the service image if it exists
+        if service.image:
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], service.image)
+            if os.path.exists(image_path):
+                os.remove(image_path)
+        
+        # Delete the service
+        db.session.delete(service)
+        db.session.commit()
+        flash('Service deleted successfully!', 'success')
+    except:
+        db.session.rollback()
+        flash('An error occurred while deleting the service', 'error')
+    
+    return redirect(url_for('profile_organizer'))
+
 if __name__ == '__main__':
     app.run(debug=True)
