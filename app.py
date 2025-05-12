@@ -143,9 +143,13 @@ def login():
         try:
             email = form.email.data
             password = form.password.data
+            ADMIN_EMAIL = 'admin@site.com'
+            ADMIN_PASSWORD = 'admin123'
+ 
             
             # Check for admin login
-            if email == 'admin' and password == 'admin':
+            if email == ADMIN_EMAIL and password == ADMIN_PASSWORD:
+
                 session['role'] = 'admin'
                 flash('Admin login successful!', 'success')
                 return redirect(url_for('admin_panel'))
@@ -286,6 +290,25 @@ def update_order_status(order_id):
         flash(f'Order status updated to {new_status}', 'success')
     
     return redirect(url_for('profile_organizer'))
+@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user = User.query.get_or_404(session['user_id'])
+
+    if request.method == 'POST':
+        user.name = request.form['name']
+        user.email = request.form['email']
+        user.mobile = request.form['mobile']
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        if user.role == 'organizer':
+            return redirect(url_for('profile_organizer'))
+        else:
+            return redirect(url_for('profile_customer'))
+
+    return render_template('edit_profile.html', user=user)
 
 @app.route('/logout')
 def logout():
@@ -390,12 +413,15 @@ def delete_service(service_id):
 # Admin Panel Routes
 @app.route('/admin')
 def admin_panel():
+    if session.get('role') != 'admin':
+          return redirect(url_for('login'))
     users = User.query.all()
     services = Service.query.all()
     orders = Order.query.all()
     complaints = Complaint.query.all()
     messages = ContactMessage.query.all()
-    
+   
+
     return render_template('admin_panel.html', 
                          users=users,
                          services=services,
@@ -405,7 +431,11 @@ def admin_panel():
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
+    if session.get('role') != 'admin':
+        return redirect(url_for('login'))
     user = User.query.get_or_404(user_id)
+    
+
     try:
         db.session.delete(user)
         db.session.commit()
@@ -418,7 +448,11 @@ def delete_user(user_id):
 
 @app.route('/admin/delete_service/<int:service_id>', methods=['POST'])
 def admin_delete_service(service_id):
+    if session.get('role') != 'admin':
+      return redirect(url_for('login'))
     service = Service.query.get_or_404(service_id)
+    
+
     try:
         # Delete the service image if it exists
         if service.image:
@@ -437,11 +471,17 @@ def admin_delete_service(service_id):
 
 @app.route('/admin/view_complaint/<int:complaint_id>')
 def view_complaint(complaint_id):
+    if session.get('role') != 'admin':
+      return redirect(url_for('login'))
+
     complaint = Complaint.query.get_or_404(complaint_id)
     return render_template('view_complaint.html', complaint=complaint)
 
 @app.route('/admin/update_complaint_status/<int:complaint_id>', methods=['POST'])
 def update_complaint_status(complaint_id):
+    if session.get('role') != 'admin':
+       return redirect(url_for('login'))
+
     complaint = Complaint.query.get_or_404(complaint_id)
     new_status = request.form.get('status')
     
@@ -458,11 +498,15 @@ def update_complaint_status(complaint_id):
 
 @app.route('/admin/view_message/<int:message_id>')
 def view_message(message_id):
+    if session.get('role') != 'admin':
+        return redirect(url_for('login'))
     message = ContactMessage.query.get_or_404(message_id)
     return render_template('view_message.html', message=message)
 
 @app.route('/admin/delete_message/<int:message_id>', methods=['POST'])
 def delete_message(message_id):
+    if session.get('role') != 'admin':
+        return redirect(url_for('login'))
     message = ContactMessage.query.get_or_404(message_id)
     try:
         db.session.delete(message)
@@ -473,6 +517,21 @@ def delete_message(message_id):
         flash('An error occurred while deleting the message', 'error')
     
     return redirect(url_for('admin_panel'))
+@app.route('/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
+def edit_user(user_id):
+    if session.get('role') != 'admin':
+        return redirect(url_for('login'))
+
+    user = User.query.get_or_404(user_id)
+    if request.method == 'POST':
+        user.name = request.form['name']
+        user.email = request.form['email']
+        user.role = request.form['role']
+        db.session.commit()
+        flash('User updated successfully!', 'success')
+        return redirect(url_for('admin_panel'))
+    
+    return render_template('edit_user.html', user=user)
 
 if __name__ == '__main__':
     app.run(debug=True)
