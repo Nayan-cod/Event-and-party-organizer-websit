@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}View Message{% endblock %}
+
+{% block content %}
+<section class="view-message-section">
+    <div class="container">
+        <h2>Contact Message Details</h2>
+        
+        <div class="message-card">
+            <p><strong>ID:</strong> {{ message.id }}</p>
+            <p><strong>Name:</strong> {{ message.name }}</p>
+            <p><strong>Email:</strong> {{ message.email }}</p>
+            <p><strong>Message:</strong></p>
+            <p>{{ message.message }}</p>
+
+            <br>
+            <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary">Back to Admin Panel</a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .message-card {
+        padding: 20px;
+        border-radius: 10px;
+        background: #f5f5f5;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .btn {
+        padding: 10px 20px;
+        background: #333;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}

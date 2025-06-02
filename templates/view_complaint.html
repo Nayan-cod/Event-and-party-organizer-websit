@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}Complaint Details{% endblock %}
+
+{% block content %}
+<section class="complaint-detail-section">
+    <div class="container">
+        <h2>Complaint Details</h2>
+
+        <div class="complaint-card">
+            <p><strong>Complaint ID:</strong> {{ complaint.id }}</p>
+            <p><strong>User:</strong> {{ complaint.user.name }} ({{ complaint.user.email }})</p>
+            <p><strong>Type:</strong> 
+                {% if complaint.complaint_type == 'service_quality' %}Service Quality
+                {% elif complaint.complaint_type == 'payment_issue' %}Payment Issue
+                {% elif complaint.complaint_type == 'organizer_behavior' %}Organizer Behavior
+                {% else %}Other
+                {% endif %}
+            </p>
+            <p><strong>Status:</strong> 
+                <span class="status-badge {{ complaint.status.lower().replace(' ', '-') }}">{{ complaint.status }}</span>
+            </p>
+            <p><strong>Description:</strong></p>
+            <p>{{ complaint.description or complaint.complaint_details }}</p>
+
+            {% if complaint.attachment %}
+                <p><strong>Attachment:</strong></p>
+                {% if complaint.attachment.endswith('.jpg') or complaint.attachment.endswith('.png') or complaint.attachment.endswith('.jpeg') %}
+                    <img src="{{ url_for('static', filename='complaint_uploads/' ~ complaint.attachment) }}" alt="Attachment Image" style="max-width: 100%; height: auto;">
+                {% else %}
+                    <a href="{{ url_for('static', filename='complaint_uploads/' ~ complaint.attachment) }}" target="_blank">View Attachment</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='complaint.css') }}">
+{% endblock %}
